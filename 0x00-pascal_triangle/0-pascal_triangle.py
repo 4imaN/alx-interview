@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 
-
 def pascal_triangle(n):
+
     if n <= 0:
         return []
     my_list, temp, r = [], [], 0
@@ -14,6 +14,8 @@ def pascal_triangle(n):
         temp = []
         r = 0
     return my_list
+
+
 def factorial(n):
     if n <= 1:
         return 1
