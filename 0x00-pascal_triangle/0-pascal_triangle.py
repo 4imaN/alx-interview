@@ -7,6 +7,12 @@ Contains function pascal_triangle(n)
 def pascal_triangle(n):
     """
     Pascal's triangle solver.
+    
+    Args:
+        n (int): The number of rows of the triangle
+        
+    Returns:
+        list: A list of lists of integers representing Pascal's triangle
     """
     if n <= 0:
         return []
@@ -21,17 +27,3 @@ def pascal_triangle(n):
         triangle.append(row)
     
     return triangle
-
-
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)
-
-def combination(n, r):
-    """
-    Computes the combination of two numbers.
-    """
-    num = factorial(n)
-    den = factorial(n - r) * factorial(r)
-    return num // den  
