@@ -14,3 +14,13 @@ def pascal_triangle(n):
         temp = []
         r = 0
     return my_list
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+
+def combination(n, r):
+    num = factorial(n)
+    den = factorial(n - r) * factorial(r)
+    return num / den
