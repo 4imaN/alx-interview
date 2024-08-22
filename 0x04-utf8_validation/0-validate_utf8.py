@@ -1,54 +1,43 @@
 #!/usr/bin/python3
 """
-utf-8 validation module
+UTF-8 validation module
 """
 
-
-def decimalToBinary(n):
-    '''Converts an integer decimal to its binary representation.'''
-    return bin(n).replace("0b", "")
-
-
 def validUTF8(data):
-    '''Returns True if data is a valid UTF-8 encoding, else return False
+    '''Returns True if data is a valid UTF-8 encoding, else False
     data is a list of integers, each integer representing a byte'''
 
-    i = 0
-    while i < len(data):
-        if len(decimalToBinary(data[i])) < 8:
-            i += 1
-            continue
+    num_bytes = 0
 
-        elif decimalToBinary(data[i])[0:3] == '110' and i + 1 < len(data):
-            secondChar = decimalToBinary(data[i + 1])
+    # Masks to check the significant bits
+    mask1 = 1 << 7
+    mask2 = 1 << 6
 
-            if len(secondChar) < 8:
-                return False
-            elif secondChar[0:2] == '10':
-                i += 2
-                continue
-
-        elif decimalToBinary(data[i])[0:4] == '1110' and i + 2 < len(data):
-            secondChar = decimalToBinary(data[i + 1])
-            thirdChar = decimalToBinary(data[i + 2])
-            if len(secondChar) < 8 or len(thirdChar) < 8:
-                return False
-            elif secondChar[0:2] == '10' and thirdChar[0:2] == '10':
-                i += 3
-                continue
-
-        elif decimalToBinary(data[i])[0:5] == '11110' and i + 3 < len(data):
-            secondChar = decimalToBinary(data[i + 1])
-            thirdChar = decimalToBinary(data[i + 2])
-            fourthChar = decimalToBinary(data[i + 3])
-            if (len(secondChar) < 8 or len(thirdChar) < 8 or
-                    len(fourthChar) < 8):
-                return False
-            elif (secondChar[0:2] == '10' and thirdChar[0:2] == '10' and
-                  fourthChar[0:2] == '10'):
-                i += 4
-                continue
-        else:
+    for num in data:
+        # Ensure num is within byte range
+        if num > 255:
             return False
 
-    return True
+        # Get the binary representation of the byte
+        byte = num & 0xFF
+
+        if num_bytes == 0:
+            # Determine the number of bytes in the UTF-8 character
+            if (byte & mask1) == 0:
+                continue
+            elif (byte & (mask1 >> 1)) == (mask1 >> 1):
+                num_bytes = 1
+            elif (byte & (mask1 >> 2)) == (mask1 >> 2):
+                num_bytes = 2
+            elif (byte & (mask1 >> 3)) == (mask1 >> 3):
+                num_bytes = 3
+            else:
+                return False
+        else:
+            # Check if the byte is a valid continuation byte
+            if (byte & mask1) != mask1 or (byte & mask2) != 0:
+                return False
+
+        num_bytes -= 1
+
+    return num_bytes == 0
