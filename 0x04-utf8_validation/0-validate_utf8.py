@@ -38,7 +38,7 @@ def validUTF8(data):
 
     return True
 
-
+    
     data1 = [467, 133, 108]
     print(validUTF8(data1))
 
